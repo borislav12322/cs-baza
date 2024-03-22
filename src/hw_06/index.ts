@@ -24,9 +24,9 @@ export class LinkList {
     if (this.isEmpty()) {
       this.first = newLink;
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      this.last.next = newLink;
+      if (this.last) {
+        this.last.next = newLink;
+      }
     }
 
     const tempPrev = this.last;
@@ -41,9 +41,10 @@ export class LinkList {
       this.last = newLink;
     } else {
       newLink.next = this.first;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      this.first.prev = newLink;
+
+      if (this.first) {
+        this.first.prev = newLink;
+      }
     }
 
     this.first = newLink;
@@ -56,17 +57,17 @@ export class LinkList {
 
     const temp = this.first;
 
-    if (this.first?.next === null) {
+    if (this.first && this.first.next === null) {
       this.last = null;
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      this.first.next.prev = null;
+      if (this.first && this.first.next) {
+        this.first.next.prev = null;
+      }
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    this.first = this.first?.next;
+    if (this.first) {
+      this.first = this.first?.next;
+    }
 
     return temp;
   }
@@ -78,17 +79,17 @@ export class LinkList {
 
     const temp = this.last;
 
-    if (this.last?.prev === null) {
+    if (this.last && this.last.prev === null) {
       this.first = null;
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      this.last.prev.next = null;
+      if (this.last && this.last.prev) {
+        this.last.prev.next = null;
+      }
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    this.last = this.last?.prev;
+    if (this.last) {
+      this.last = this.last.prev;
+    }
 
     return temp;
   }
@@ -110,9 +111,10 @@ export class LinkList {
     return {
       next() {
         const currentCursor = cursor;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        cursor = cursor?.next;
+
+        if (cursor) {
+          cursor = cursor.next;
+        }
 
         return { value: currentCursor, done: currentCursor === null };
       },
