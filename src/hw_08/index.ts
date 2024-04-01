@@ -42,7 +42,16 @@ class Vector {
     return this.length;
   }
 
-  public pop(){}
+  public pop() {
+    if (this.length !== 0) {
+      const currentCursor = this.length - 1;
+      this.typedArray[currentCursor] = 0;
+
+      return this.typedArray[--this.length];
+    } else {
+      throw new Error('Empty');
+    }
+  }
 }
 
 const vec = new Vector(Int32Array, { capacity: 4 });
@@ -57,3 +66,11 @@ console.log(vec.typedArray);
 console.log(vec.capacity);
 console.log(vec.length);
 console.log(vec.buffer.byteLength);
+
+console.log(vec.pop());
+console.log(vec.pop());
+console.log(vec.pop());
+console.log(vec.pop());
+console.log(vec.pop());
+
+console.log(vec.typedArray);
