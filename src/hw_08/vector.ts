@@ -1,5 +1,3 @@
-// const vec = new Vector(Int32Array, {capacity: 4});
-
 interface IVectorOptions {
   capacity: number;
 }
@@ -7,10 +5,27 @@ interface IVectorOptions {
 type TArrayConstructor =
   | Int8ArrayConstructor
   | Int16ArrayConstructor
-  | Int32ArrayConstructor;
+  | Int32ArrayConstructor
+  | Uint8ArrayConstructor
+  | Uint8ClampedArrayConstructor
+  | Uint16ArrayConstructor
+  | Uint32ArrayConstructor
+  | Float32ArrayConstructor
+  | Float64ArrayConstructor;
+
+type TypedArray =
+  | Int8Array
+  | Int16Array
+  | Int32Array
+  | Uint8Array
+  | Uint8ClampedArray
+  | Uint16Array
+  | Uint32Array
+  | Float32Array
+  | Float64Array;
 
 class Vector {
-  public typedArray: Int8Array | Int16Array | Int32Array;
+  public typedArray: TypedArray;
   public capacity: number = 0;
   public length = 0;
   public buffer: ArrayBuffer;
@@ -51,7 +66,7 @@ class Vector {
 
       return this.typedArray[--this.length];
     } else {
-      throw new Error('Empty');
+      throw new TypeError('Empty');
     }
   }
 
@@ -80,7 +95,11 @@ class Vector {
         const currentCursor = cursor;
         cursor = cursor + 1;
 
-        return { value: typedArray[currentCursor], done: currentCursor === length };
+        if (currentCursor < length) {
+          return { done: false, value: typedArray[currentCursor] };
+        } else {
+          return { done: true, value: undefined };
+        }
       },
     };
   }
@@ -93,11 +112,11 @@ vec.push(2);
 vec.push(3);
 vec.push(4);
 
-console.log(vec.typedArray);
-console.log(vec.capacity);
-console.log(vec.length);
-console.log(vec.buffer);
-console.log(vec.buffer.byteLength);
+// console.log(vec.typedArray);
+// console.log(vec.capacity);
+// console.log(vec.length);
+// console.log(vec.buffer);
+// console.log(vec.buffer.byteLength);
 
 console.log(vec.pop());
 console.log(vec.pop());
@@ -114,14 +133,22 @@ const i = vec.values();
 
 console.log('length' + vec.length);
 
-for (const a of i) {
-  console.log('el ' + a);
-}
+// for (const a of i) {
+//   console.log('el ' + a);
+// }
 
-vec.shrinkToFit();
+// vec.shrinkToFit();
 
-console.log(vec.typedArray);
-console.log(vec.capacity);
-console.log(vec.length);
-console.log(vec.buffer);
-console.log(vec.buffer.byteLength);
+// console.log(vec.typedArray);
+// console.log(vec.capacity);
+// console.log(vec.length);
+// console.log(vec.buffer);
+// console.log(vec.buffer.byteLength);
+
+console.log(i.next());
+console.log(i.next());
+console.log(i.next());
+console.log(i.next());
+console.log(i.next());
+console.log(i.next());
+console.log(i.next());
