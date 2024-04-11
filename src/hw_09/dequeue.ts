@@ -80,6 +80,23 @@ class Dequeue {
     this.length++;
     this.rightNode[this.lastIndex++] = value;
   }
+
+  popRight() {
+    if (!this.length) {
+      console.log('Empty!!!');
+      return;
+    }
+
+    if (this.lastIndex < 0) {
+      const linkedList = this.extendedArray;
+
+      linkedList.deleteLast();
+
+      if (linkedList.last) {
+        this.rightNode = linkedList.last.value;
+      }
+    }
+  }
 }
 
 const dequeue = new Dequeue(Uint8Array, 64);
