@@ -22,4 +22,17 @@
 //
 // console.log(vec.buffer);  // Ссылка на ArrayBuffer
 
-class Matrix {}
+// class Matrix {
+//   TypedArray: TArrayConstructor;
+//   coords: number[];
+//
+//   constructor(TypedArray: TArrayConstructor, ...coords: number[]) {
+//     this.TypedArray = TypedArray;
+//     this.coords = coords;
+//   }
+//
+//   public set() {}
+//   public get() {}
+// }
+
+// const matrix2n2n2 = new Matrix(Int16Array, 1, 2, 2);
