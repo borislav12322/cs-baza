@@ -5,12 +5,12 @@ class Dequeue {
   TypedArray: TypedArray;
   capacity: number;
   buffer: ArrayBuffer;
-  private firstIndex: number;
-  private lastIndex: number;
+  firstIndex: number;
+  lastIndex: number;
   leftNode: TypedArray;
   rightNode: TypedArray;
   extendedArray: LinkList;
-  private arrayConscructor: TArrayConstructor;
+  arrayConscructor: TArrayConstructor;
   middleTypedArray: number;
   length: number = 0;
 
@@ -81,13 +81,13 @@ class Dequeue {
     this.rightNode[this.lastIndex++] = value;
   }
 
-  popRight() {
+  deleteRight() {
     if (!this.length) {
       console.log('Empty!!!');
-      return;
+      return null;
     }
 
-    if (this.lastIndex < 0) {
+    if (this.lastIndex <= 0) {
       const linkedList = this.extendedArray;
 
       linkedList.deleteLast();
@@ -95,54 +95,51 @@ class Dequeue {
       if (linkedList.last) {
         this.rightNode = linkedList.last.value;
       }
+
+      this.lastIndex = this.capacity - 1;
+    } else {
+      this.lastIndex--;
     }
+
+    this.length--;
+    return this.rightNode[this.lastIndex];
+  }
+
+  deleteLeft() {
+    if (!this.length) {
+      console.log('Empty!!!');
+      return null;
+    }
+
+    if (this.firstIndex >= this.capacity) {
+      const linkedList = this.extendedArray;
+
+      linkedList.deleteFirst();
+
+      if (linkedList.first) {
+        this.leftNode = linkedList.first.value;
+      }
+
+      this.firstIndex = 0;
+    } else {
+      this.firstIndex++;
+    }
+
+    this.length--;
+    return this.leftNode[this.firstIndex];
   }
 }
 
 const dequeue = new Dequeue(Uint8Array, 64);
 
-// vec.pushLeft(1); // Возвращает длину - 1
-// vec.pushLeft(2); // 2
-// vec.pushLeft(3); // 3
-//
-// // console.log(dequeue.length); // 3
-// vec.popLeft(); // Удаляет с начала, возвращает удаленный элемент - 3
-//
-// vec.pushRight(4);
-// vec.pushRight(5);
-// vec.pushRight(6);
-//
-// vec.popRight(); // Удаляет с конца, возвращает удаленный элемент - 6
-
-// console.log(dequeue);
-
-// dequeue.insertLeft(32);
-// dequeue.insertLeft(33);
-// dequeue.insertLeft(34);
-// dequeue.insertLeft(35);
-// dequeue.insertLeft(36);
-// dequeue.insertLeft(37);
-// dequeue.insertLeft(38);
-// dequeue.insertLeft(39);
-// dequeue.insertLeft(40);
-
-let cur = 100;
+let cur = 6;
 while (cur !== 0) {
   dequeue.insertRight(cur);
   cur--;
 }
 
-let curLeft = 100;
+let curLeft = 6;
 while (curLeft !== 0) {
   dequeue.insertLeft(curLeft);
   curLeft--;
 }
-
-// console.log(dequeue.TypedArray);
-// console.log(dequeue.extendedArray);
-
-for (const el of dequeue.extendedArray) {
-  console.log(el?.value);
-}
-
-console.log(dequeue.length);
