@@ -124,6 +124,12 @@ export class LinkList {
 
 const linkedList = new LinkList();
 
-linkedList.unshift(3);
-linkedList.unshift(2);
-linkedList.unshift(1);
+linkedList.push(5);
+linkedList.push(20);
+linkedList.push(10);
+linkedList.push(1);
+linkedList.push(8);
+
+for (const el of linkedList) {
+  console.log(el?.value);
+}
