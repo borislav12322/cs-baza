@@ -36,5 +36,8 @@
   },
   "dependencies": {
     "eslint-plugin-prettier": "^5.1.3"
+  },
+  "bin": {
+    "hello": "./bin/hello.js"
   }
 }
