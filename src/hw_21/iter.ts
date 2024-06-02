@@ -166,52 +166,41 @@
 // console.log([...symbolRange.reverse()]);
 // console.log([...symbolRange.reverse()]);
 
-function seq(...iters: (Array<number | string> | Set<number | string> | string)[]) {
-  const getIters = iters.map(el => el[Symbol.iterator]());
-
-  return {
-    [Symbol.iterator]() {
-      return this;
-    },
-
-    next(): { value: string | number | undefined; done: boolean } {
-      const iter = getIters.next();
-
-      for (const iter of getIters) {
-        const ab = iter.next();
-
-        if (ab.value) {
-          console.log(ab.value);
-
-          values.push(ab.value);
-        }
-      }
-
-      const { value } = iter;
-
-      if (value) {
-        return {
-          value,
-          done: false,
-        };
-      } else {
-        return {
-          value: undefined,
-          done: true,
-        };
-      }
-    },
-  };
-}
-
-console.log(...seq([1, 2], new Set([3, 4]), 'bla'));
+// function seq(...iters: (Array<number | string> | Set<number | string> | string)[]) {
+//   const getIters = iters.map(el => el[Symbol.iterator]());
+//   let i = 0;
+//
+//   return {
+//     [Symbol.iterator]() {
+//       return this;
+//     },
+//
+//     next():
+//       | { value: string | number | undefined; done: boolean }
+//       | IteratorYieldResult<number | string | undefined>
+//       | IteratorYieldResult<string> {
+//       while (i < getIters.length) {
+//         const iter = getIters[i].next();
+//
+//         if (iter.done) {
+//           i++;
+//         } else {
+//           return iter;
+//         }
+//       }
+//
+//       return { value: undefined, done: true };
+//     },
+//   };
+// }
+//
+// console.log(...seq([1, 2], new Set([3, 4]), 'bla'));
+// console.log(seq([1, 2], new Set([3, 4]), 'bla'));
 
 // function zip(...iters: (Array<number | string> | Set<number | string> | string)[]) {
 //   const getIter = iters.map(iter => iter[Symbol.iterator]());
 //
-//   let i = 0;
-//
-//   const values: (string | number)[][] = [];
+//   let j = 0;
 //
 //   return {
 //     [Symbol.iterator]() {
@@ -219,26 +208,79 @@ console.log(...seq([1, 2], new Set([3, 4]), 'bla'));
 //     },
 //
 //     next() {
-//       for (const iter of getIter) {
-//         const ab = iter.next();
+//       let i = 0;
+//       const arr: (string | number)[] = [];
 //
-//         if (ab.value) {
-//           console.log(ab.value);
-//
-//           values.push(ab.value);
-//         }
+//       if (j === getIter.length) {
+//         return {
+//           value: undefined,
+//           done: true,
+//         };
 //       }
 //
-//       // const a = values[Symbol.iterator]();
+//       while (i < getIter.length) {
+//         const iter = getIter[i++].next();
 //
-//       i++;
+//         if (iter.done) {
+//           return {
+//             value: undefined,
+//             done: true,
+//           };
+//         }
+//
+//         arr.push(iter.value);
+//       }
+//
+//       j++;
+//
 //       return {
-//         value: values,
-//         done: i >= iters.length - 1,
+//         value: arr,
+//         done: false,
 //       };
 //     },
 //   };
 // }
 //
-// console.log(...zip([1, 2], new Set([3, 4]), 'bla'));
-// zip([1, 2], new Set([3, 4]), 'bl');
+// console.log(...zip([1, 2, 8], new Set([3, 4, 9]), 'bla'));
+
+function mapSeq(
+  iterObj: Array<number | string> | Set<number | string> | string,
+  itersFunc: ((el: number) => number)[],
+) {
+  const iters = iterObj[Symbol.iterator]();
+
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+
+    next() {
+      const getItersFunc = itersFunc[Symbol.iterator]();
+      const iterValue = iters.next();
+      const iterFunc = getItersFunc;
+      let curr = iterFunc.next();
+      let value = iterValue.value;
+
+      if (iterValue.done) {
+        return {
+          done: true,
+          value: undefined,
+        };
+      }
+
+      while (!curr.done) {
+        value = curr.value(value);
+        curr = iterFunc.next();
+      }
+
+      curr = itersFunc[Symbol.iterator]().next();
+
+      return {
+        value,
+        done: false,
+      };
+    },
+  };
+}
+
+console.log(...mapSeq([1, 2, 3, 10], [el => el * 2, el => el - 1]));
