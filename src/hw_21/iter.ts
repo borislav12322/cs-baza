@@ -166,52 +166,10 @@
 // console.log([...symbolRange.reverse()]);
 // console.log([...symbolRange.reverse()]);
 
-function seq(...iters: (Array<number | string> | Set<number | string> | string)[]) {
-  const getIters = iters.map(el => el[Symbol.iterator]());
-
-  return {
-    [Symbol.iterator]() {
-      return this;
-    },
-
-    next(): { value: string | number | undefined; done: boolean } {
-      const iter = getIters.next();
-
-      for (const iter of getIters) {
-        const ab = iter.next();
-
-        if (ab.value) {
-          console.log(ab.value);
-
-          values.push(ab.value);
-        }
-      }
-
-      const { value } = iter;
-
-      if (value) {
-        return {
-          value,
-          done: false,
-        };
-      } else {
-        return {
-          value: undefined,
-          done: true,
-        };
-      }
-    },
-  };
-}
-
-console.log(...seq([1, 2], new Set([3, 4]), 'bla'));
-
-// function zip(...iters: (Array<number | string> | Set<number | string> | string)[]) {
-//   const getIter = iters.map(iter => iter[Symbol.iterator]());
-//
+// function seq(...iters: (Array<number | string> | Set<number | string> | string)[]) {
+//   const getIters = iters.map(el => el[Symbol.iterator]());
+//   const itersLength = iters.length;
 //   let i = 0;
-//
-//   const values: (string | number)[][] = [];
 //
 //   return {
 //     [Symbol.iterator]() {
@@ -219,26 +177,77 @@ console.log(...seq([1, 2], new Set([3, 4]), 'bla'));
 //     },
 //
 //     next() {
-//       for (const iter of getIter) {
-//         const ab = iter.next();
+//       while (i < itersLength) {
+//         const iter = getIters[i].next();
 //
-//         if (ab.value) {
-//           console.log(ab.value);
-//
-//           values.push(ab.value);
+//         if (iter.done) {
+//           i++;
+//         } else {
+//           return iter;
 //         }
 //       }
 //
-//       // const a = values[Symbol.iterator]();
-//
-//       i++;
 //       return {
-//         value: values,
-//         done: i >= iters.length - 1,
+//         done: true,
+//         value: undefined,
 //       };
 //     },
 //   };
 // }
-//
-// console.log(...zip([1, 2], new Set([3, 4]), 'bla'));
+
+// console.log(...seq([1, 2], new Set([3, 4]), 'bla'));
+// console.log(seq([1, 2], new Set([3, 4]), 'bla'));
+
+function zip(...iters: (Array<number | string> | Set<number | string> | string)[]) {
+  const getIter = iters.map(iter => iter[Symbol.iterator]());
+  const itersLength = iters.length;
+
+  let i = 0;
+  let j = 0;
+
+  let isDone = false;
+
+  return {
+    [Symbol.iterator]() {
+      return this;
+    },
+
+    next() {
+      if (isDone) {
+        return {
+          value: undefined,
+          done: true,
+        };
+      }
+
+      const arr: (number | string)[] = [];
+
+      while (j < itersLength) {
+        const iter = getIter[i++].next();
+
+        if (iter.done) {
+          isDone = true;
+          return {
+            value: undefined,
+            done: isDone,
+          };
+        }
+
+        arr.push(iter.value);
+
+        if (i === itersLength) {
+          i = 0;
+          j++;
+        }
+      }
+
+      return {
+        value: arr,
+        done: false,
+      };
+    },
+  };
+}
+
+console.log(...zip([1, 2], new Set([3, 4]), 'bla'));
 // zip([1, 2], new Set([3, 4]), 'bl');
