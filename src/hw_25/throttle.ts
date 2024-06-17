@@ -14,6 +14,7 @@ function throttle(fn: (...args: never[]) => void, time: number) {
     }
 
     timer = setTimeout(() => {
+      isFirst = true;
       fn(...args);
 
       clearTimeout(timer);
@@ -30,6 +31,8 @@ function haha() {
 const throttledLaugh = throttle(haha, 400);
 
 throttledLaugh(); // Выполнится сразу
+throttledLaugh();
+throttledLaugh();
 throttledLaugh();
 throttledLaugh();
 throttledLaugh();
