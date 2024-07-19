@@ -1,52 +1,47 @@
-class Result<D, E> {
-  private state: 'success' | 'error';
-  private data: D;
-  private cause: E;
+interface IResult {}
 
-  constructor(fn: Function, state?: 'success' | 'error') {
-    this.state = state;
+class Result<D, E> implements IResult {
+  state: 'ok' | 'err';
+  data: D;
+  cause: E;
 
+  constructor(cb: () => D) {
     try {
-      fn();
-      this.state = 'success';
+      this.state = 'ok';
+      this.data = cb();
     } catch (e) {
-      console.log(e);
-      this.state = 'error';
+      this.state = 'err';
       this.cause = e;
     }
-    if (this.state === 'success') {
-      this.data = fn();
-      this.state = 'success';
-    }
   }
 
-  static Success(data: Function) {
-    return new Result(data, 'success');
-  }
-  static Reject(data: Function) {
-    return new Result(data, 'error');
-  }
-
-  then(fn: (data: D) => void) {
-    if (this.state === 'success') {
-      fn(this.data);
+  then(cb: (data: D) => void) {
+    if (this.state === 'ok') {
+      cb(this.data);
     }
 
     return this;
   }
 
-  catch(errFn: (err: E) => void) {
-    if (this.state === 'error') {
-      errFn(this.cause);
+  catch(cbErr: (err: E) => void) {
+    if (this.state === 'err') {
+      cbErr(this.cause);
     }
 
     return this;
   }
 }
 
-Result.Success(() => 12 + 12)
+const data = new Result(() => {
+  throw 'er2r';
+});
+
+data
   .then(res => {
     console.log(res);
+  })
+  .catch(err => {
+    console.log(err);
   })
   .then(res => {
     console.log(res);
